@@ -1,0 +1,18 @@
+# Exact working versions for YouTube Transcript MCP Server
+# Last tested: 2025-09-14
+mcp==1.14.0
+youtube-transcript-api==1.2.2
+
+# Dependencies (automatically installed)
+defusedxml>=0.7.1,<0.8.0
+requests>=2.25.0
+anyio>=4.5
+httpx-sse>=0.4
+httpx>=0.27.1
+jsonschema>=4.20.0
+pydantic-settings>=2.5.2
+pydantic>=2.11.0,<3.0.0
+python-multipart>=0.0.9
+sse-starlette>=1.6.1
+starlette>=0.27
+uvicorn>=0.31.1

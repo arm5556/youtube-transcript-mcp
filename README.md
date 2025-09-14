@@ -19,8 +19,30 @@ pip install mcp>=1.12.4 youtube-transcript-api>=1.2.2
 
 **Tested with:**
 - Python 3.11
-- mcp 1.12.4
+- mcp 1.14.0
 - youtube-transcript-api 1.2.2
+
+### Installation Options
+
+**Option 1: Quick Install (minimum versions)**
+```bash
+# Install/upgrade all dependencies to minimum required versions
+pip install --upgrade "mcp>=1.12.4" "youtube-transcript-api>=1.2.2"
+```
+
+**Option 2: Locked Versions (recommended)**
+```bash
+# Install exact tested versions for guaranteed compatibility
+pip install -r requirements.txt
+```
+
+**Option 3: Clean Environment**
+```bash
+# Create isolated environment with exact versions
+python3 -m venv youtube-transcript-env
+source youtube-transcript-env/bin/activate  # On Windows: youtube-transcript-env\Scripts\activate
+pip install -r requirements.txt
+```
 
 ## Usage
 
@@ -99,6 +121,87 @@ Then use: `yt https://www.youtube.com/watch?v=VIDEO_ID`
 - `https://youtu.be/VIDEO_ID`
 - `https://www.youtube.com/embed/VIDEO_ID`
 - `https://www.youtube.com/v/VIDEO_ID`
+
+## Troubleshooting
+
+### MCP Server Shows "Status: ✘ failed"
+
+**Common causes and solutions:**
+
+1. **MCP Version Too Old**
+   ```bash
+   # Check current version
+   pip show mcp
+
+   # Upgrade if below 1.12.4
+   pip install --upgrade "mcp>=1.12.4"
+   ```
+
+2. **YouTube Transcript API Version Issues**
+   ```bash
+   # Upgrade to latest compatible version
+   pip install --upgrade "youtube-transcript-api>=1.2.2"
+   ```
+
+3. **Build Configuration Missing**
+   - Ensure `pyproject.toml` has the hatch build configuration:
+   ```toml
+   [tool.hatch.build.targets.wheel]
+   packages = ["."]
+   ```
+
+4. **Python Version**
+   - Requires Python 3.10 or higher
+   - Test with: `python3 --version`
+
+### MCP Server Starts But Transcript Fails
+
+**"no element found: line 1, column 0" Error:**
+- Video has no captions/transcripts available
+- Video is private, unlisted, or region-restricted
+- YouTube anti-bot measures (try again later)
+- Check if video shows "CC" button in YouTube player
+
+**"Could not extract video ID" Error:**
+- Ensure URL format is supported (see above)
+- Remove extra parameters like `&t=14s` if causing issues
+
+### Connection Issues
+
+**After updating dependencies, MCP server still fails:**
+1. Completely restart Claude Code
+2. Reconnect with `/mcp` command
+3. Clear any cached configurations
+
+**Dependency conflicts:**
+```bash
+# Check for conflicts
+pip check
+
+# If conflicts exist, create clean environment
+python3 -m venv youtube-transcript-env
+source youtube-transcript-env/bin/activate
+pip install "mcp>=1.12.4" "youtube-transcript-api>=1.2.2"
+```
+
+### Testing Your Installation
+
+**Test MCP server directly:**
+```bash
+cd /path/to/youtube-transcript-mcp
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{"roots":{"listChanged":true},"sampling":{}},"clientInfo":{"name":"test","version":"1.0"}}}' | python3 main.py
+```
+
+Should return: `{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2024-11-05",...}}`
+
+**Test YouTube API directly:**
+```bash
+python3 -c "
+from youtube_transcript_api import YouTubeTranscriptApi
+api = YouTubeTranscriptApi()
+print('API working:', bool(api.list('dQw4w9WgXcQ')))
+"
+```
 
 ## License
 
